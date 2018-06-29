@@ -1,7 +1,6 @@
 #import <AddressBook/AddressBook.h>
 #import <UIKit/UIKit.h>
 #import "RCTContacts.h"
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @implementation RCTContacts {
     CNContactStore * contactStore;
@@ -539,59 +538,10 @@ RCT_EXPORT_METHOD(updateContact:(NSDictionary *)contactData callback:(RCTRespons
 
     contact.postalAddresses = postalAddresses;
 
-    NSString *thumbnailPath = [contactData valueForKey:@"thumbnailPath"];
-
-    if(thumbnailPath && [thumbnailPath rangeOfString:@"rncontacts_"].location == NSNotFound) {
-        contact.imageData = [RCTContacts imageData:thumbnailPath];
-    }
-}
-
-+ (NSData*) imageData:(NSString*)sourceUri
-{
-    if([sourceUri hasPrefix:@"assets-library"]){
-        return [RCTContacts loadImageAsset:[NSURL URLWithString:sourceUri]];
-    } else if ([sourceUri isAbsolutePath]) {
-        return [NSData dataWithContentsOfFile:sourceUri];
-    } else {
-        return [NSData dataWithContentsOfURL:[NSURL URLWithString:sourceUri]];
-    }
 }
 
 enum { WDASSETURL_PENDINGREADS = 1, WDASSETURL_ALLFINISHED = 0};
 
-+ (NSData*) loadImageAsset:(NSURL*)assetURL {
-    //thanks to http://www.codercowboy.com/code-synchronous-alassetlibrary-asset-existence-check/
-
-    __block NSData *data = nil;
-    __block NSConditionLock * albumReadLock = [[NSConditionLock alloc] initWithCondition:WDASSETURL_PENDINGREADS];
-    //this *MUST* execute on a background thread, ALAssetLibrary tries to use the main thread and will hang if you're on the main thread.
-    dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ALAssetsLibrary * assetLibrary = [[ALAssetsLibrary alloc] init];
-        [assetLibrary assetForURL:assetURL
-                      resultBlock:^(ALAsset *asset) {
-                          ALAssetRepresentation *rep = [asset defaultRepresentation];
-
-                          Byte *buffer = (Byte*)malloc(rep.size);
-                          NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
-                          data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-
-                          [albumReadLock lock];
-                          [albumReadLock unlockWithCondition:WDASSETURL_ALLFINISHED];
-                      } failureBlock:^(NSError *error) {
-                          NSLog(@"asset error: %@", [error localizedDescription]);
-
-                          [albumReadLock lock];
-                          [albumReadLock unlockWithCondition:WDASSETURL_ALLFINISHED];
-                      }];
-    });
-
-    [albumReadLock lockWhenCondition:WDASSETURL_ALLFINISHED];
-    [albumReadLock unlock];
-
-    NSLog(@"asset lookup finished: %@ %@", [assetURL absoluteString], (data ? @"exists" : @"does not exist"));
-
-    return data;
-}
 
 RCT_EXPORT_METHOD(deleteContact:(NSDictionary *)contactData callback:(RCTResponseSenderBlock)callback)
 {
