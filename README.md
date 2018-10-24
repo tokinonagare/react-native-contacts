@@ -5,7 +5,7 @@ To contribute read [CONTRIBUTING.md](CONTRIBUTING.md).
 `getAll` is a database intensive process, and can take a long time to complete depending on the size of the contacts list. Because of this, it is recommended you access the `getAll` method before it is needed, and cache the results for future use.
 
 ```js
-var Contacts = require('react-native-contacts')
+var Contacts = require('react-native-custom-contacts')
 
 Contacts.getAll((err, contacts) => {
   if (err) throw err;
@@ -18,7 +18,7 @@ Contacts.getAll((err, contacts) => {
 `getContactMatchingString` is meant to alleviate the amount of time it takes to get all contacts, by filtering on the native side based on a string.
 
 ```js
-var Contacts = require('react-native-contacts')
+var Contacts = require('react-native-custom-contacts')
 
 Contacts.getContactsMatchingString("filter", (err, contacts) => {
   if (err) throw err;
@@ -33,18 +33,18 @@ Contacts.getContactsMatchingString("filter", (err, contacts) => {
 ### With React Native Link
 run:
 
-    npm install react-native-contacts
-    react-native link react-native-contacts
+    npm install react-native-custom-contacts
+    react-native link react-native-custom-contacts
 
 or if you use yarn:
 
-    yarn add react-native-contacts
-    react-native link react-native-contacts
+    yarn add react-native-custom-contacts
+    react-native link react-native-custom-contacts
 
 ### Manual installation
 
 1. In XCode, in the project navigator, right click Libraries ➜ Add Files to [your project's name]
-1. add ./node_modules/react-native-contacts/ios/RCTContacts.xcodeproj
+1. add ./node_modules/react-native-custom-contacts/ios/RCTContacts.xcodeproj
 1. In the XCode project navigator, select your project, select the Build Phases tab and in the Link Binary With Libraries section add libRCTContacts.a
 
 ### iOS Permissions
