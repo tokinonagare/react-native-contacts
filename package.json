@@ -1,6 +1,6 @@
 {
   "name": "react-native-custom-contacts",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "To contribute read [CONTRIBUTING.md](CONTRIBUTING.md).",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,6 @@
   "bugs": {
     "url": "https://github.com/tokinonagare/react-native-contacts/issues"
   },
-  "homepage": "https://github.com/tokinonagare/react-native-contacts#readme"
+  "homepage": "https://github.com/tokinonagare/react-native-contacts#readme",
+  "dependencies": {}
 }
